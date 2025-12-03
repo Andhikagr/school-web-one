@@ -1,100 +1,25 @@
 import React, { useState, useRef, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
-import i18next from "../locales/Nav_lang";
+import { Translation, useTranslation } from "react-i18next";
+import "../locales/index_lang";
+import i18n from "../locales/index_lang";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const menu = [
-    {
-      text: "Beranda",
-      href: "/",
-      children: [
-        { text: "Tentang Kami", href: "/Tentang Kami" },
-        { text: "Visi dan Misi", href: "/program" },
-      ],
-    },
-
-    {
-      text: "Akademik",
-      href: "/akademik",
-      children: [
-        { text: "SMA", href: "/sma" },
-        { text: "SMP", href: "/smp" },
-        { text: "SD", href: "/sd" },
-        { text: "KB dan TK", href: "/kbtk" },
-      ],
-    },
-    {
-      text: "Program",
-      href: "/program",
-      children: [
-        { text: "Tahfidz", href: "/tahfidz" },
-        { text: "Reguler", href: "/reguler" },
-        { text: "Mahir", href: "/mahir" },
-      ],
-    },
-    {
-      text: "Fasilitas",
-      href: "/fasilitas",
-      children: [
-        { text: "Sarana dan Prasarana", href: "/srana" },
-        { text: "Extrakulikuler", href: "/extra" },
-      ],
-    },
-    {
-      text: "Berita",
-      href: "/berita",
-      children: [
-        { text: "Berita Terbaru", href: "/khotbah" },
-        { text: "Galeri Kegiatan", href: "/aqidah" },
-      ],
-    },
-    {
-      text: "Artikel",
-      href: "/artikel",
-      children: [
-        { text: "Kumpulan Khotbah Jum'at", href: "/khotbah" },
-        { text: "Aqidah", href: "/aqidah" },
-        { text: "Manhaj", href: "/manhaj" },
-        { text: "Fiqih dan Muammalah", href: "/fiqih" },
-        { text: "Sejarah Islam", href: "/Sejarah" },
-      ],
-    },
-    {
-      text: "Pendaftaran",
-      href: "/pendaftaran",
-      children: [
-        { text: "Alur Pendaftaran", href: "/alur" },
-        { text: "Download Brosur", href: "/brosur" },
-      ],
-    },
-
-    {
-      text: "Kontak",
-      href: "/kontak",
-      children: [
-        { text: "Alamat", href: "/alamat" },
-        { text: "Admin PSB", href: "/admin" },
-      ],
-    },
-  ];
-
-  //translate
-  const [t, i18next] = useTranslation();
+  // translate
+  const { t, i18n } = useTranslation();
+  const translate = t("navbar", { returnObjects: true });
   const toggleLang = (lang) => {
-    i18next.changeLanguage(lang);
-    setShowLang(false);
+    i18n.changeLanguage(lang);
   };
-  const Dir = i18next.language === "ar" ? "rtl" : "ltr";
+  const Dir = i18n.language === "ar" ? "rtl" : "ltr";
 
   // format tanggal dan waktu
   const [time, setTime] = useState(new Date());
-
   const formatDate = (date) => {
     return date.toLocaleDateString(
-      i18next.language === "ar"
+      i18n.language === "ar"
         ? "ar-SA"
-        : i18next.language === "en"
+        : i18n.language === "en"
         ? "en-US"
         : "id-ID",
       {
@@ -132,7 +57,6 @@ const Navbar = () => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
-
   useEffect(() => {
     if (openSearch) inputRef.current?.focus();
   }, [openSearch]);
@@ -157,19 +81,18 @@ const Navbar = () => {
   const [hoveredMenu, setHoveredMenu] = React.useState(null);
 
   // header effect
-  const [showTopBar, setShowTopBar] = React.useState(true);
+  const [showTopBar, setShowTopBar] = React.useState(() => window.scrollY > 0);
   const lastScrollY = React.useRef(0);
   const ticking = React.useRef(false);
 
+  // set posisi awal topbar sesuai scroll
   useEffect(() => {
-    // set posisi awal topbar sesuai scroll
     const initialScroll = window.scrollY;
     if (initialScroll === 0) {
       setShowTopBar(false);
     } else {
       setShowTopBar(true);
     }
-
     const handleScroll = () => {
       const currentScroll = window.scrollY;
       const threshold = window.innerHeight * 0.05;
@@ -201,32 +124,22 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-white">
-        <div className="fixed bg-amber-950 w-full text-white px-[2%] flex justify-between transition-all duration-800 ease-in-out z-40 h-[48px]  ">
-          <div className="flex gap-x-10 py-3">
-            <span className="hidden lg:flex  items-center gap-x-2 sm:text-base md:text-lg lg:text-xl">
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: "28px" }}
-              >
-                calendar_today
-              </span>
+      <header className="sticky top-0 w-full bg-white z-[9999] ">
+        <div className="fixed bg-amber-950 w-full text-white px-[2%] flex justify-between transition-all duration-800 ease-in-out z-40 h-[40px]  ">
+          <div className="flex gap-x-4 py-3">
+            <span className="hidden lg:flex  items-center gap-x-2 text-sm ">
+              <span className="material-symbols-outlined">calendar_today</span>
               {formatDate(time)}
             </span>
-            <span className="hidden xl:flex items-center gap-x-2 sm:text-base md:text-lg lg:text-xl">
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: "28px" }}
-              >
-                pace
-              </span>
+            <span className="hidden xl:flex items-center gap-x-2 text-sm ">
+              <span className="material-symbols-outlined">pace</span>
               {formatTime(time)}
             </span>
           </div>
-          <div className="flex 2xl:flex gap-x-5 sm:text-lg md:text-xl lg:text-2xl items-center ml-auto relative">
+          <div className="flex 2xl:flex gap-x-1 items-center ml-auto">
             <button
-              className={`cursor-pointer   sm:text-md md:text-lg lg:text-xl ${
-                i18next.language === "id"
+              className={`cursor-pointer text-sm  ${
+                i18n.language === "id"
                   ? "bg-amber-50 px-1 rounded-md text-amber-950"
                   : ""
               } `}
@@ -235,8 +148,8 @@ const Navbar = () => {
               ID
             </button>
             <button
-              className={`cursor-pointer  sm:text-md md:text-lg lg:text-xl ${
-                i18next.language === "en"
+              className={`cursor-pointer text-sm  ${
+                i18n.language === "en"
                   ? "bg-amber-50 px-1 rounded-md text-amber-950"
                   : ""
               } `}
@@ -245,8 +158,8 @@ const Navbar = () => {
               Eng
             </button>
             <button
-              className={`cursor-pointer  sm:text-md md:text-lg lg:text-xl ${
-                i18next.language === "ar"
+              className={`cursor-pointer text-sm  ${
+                i18n.language === "ar"
                   ? "bg-amber-50 px-1 rounded-md text-amber-950"
                   : ""
               } `}
@@ -254,9 +167,18 @@ const Navbar = () => {
             >
               Ar
             </button>
-            <i className="ri-facebook-fill cursor-pointer hover:text-amber-600"></i>
-            <i className="ri-instagram-fill cursor-pointer hover:text-amber-600"></i>
-            <i className="ri-youtube-fill cursor-pointer hover:text-amber-600"></i>
+            <i
+              className="ri-facebook-fill cursor-pointer hover:text-amber-600"
+              style={{ fontSize: "20px" }}
+            ></i>
+            <i
+              className="ri-instagram-fill cursor-pointer hover:text-amber-600"
+              style={{ fontSize: "20px" }}
+            ></i>
+            <i
+              className="ri-youtube-fill cursor-pointer hover:text-amber-600"
+              style={{ fontSize: "20px" }}
+            ></i>
             <button
               className="flex items-center cursor-pointer hover:text-amber-600"
               ref={searchRef}
@@ -273,17 +195,17 @@ const Navbar = () => {
         {/* navbar */}
         <div
           className={`fixed bg-white z-50 transition-all duration-300 ease-in-out w-full ${
-            showTopBar ? "translate-y-0  " : "translate-y-[48px]   "
+            showTopBar ? "translate-y-0  " : "translate-y-[40px]   "
           }`}
         >
-          <nav className="relative flex items-center justify-between shadow-md h-[80px] w-full z-50 px-[7%]">
+          <nav className="relative flex items-center justify-between shadow-theme  h-[65px] w-full z-50 px-[7%]">
             {/* menu hover*/}
             <ul
-              className={`hidden ml-auto lg:grid grid-cols-2 ${
+              className={`hidden ml-auto lg:grid grid-cols-2 gap-x-6 pr-6 xl:flex font-medium flex-wrap text-amber-950 justify-end ${
                 Dir === "rtl" ? "justify-items-end" : "justify-items-start"
-              }  whitespace-nowrap  gap-x-2 lg:pr-2 lg:ml-auto   2xl:flex 2xl:gap-x-2 gap-y-1 font-semibold sm:text-base md:text-lg lg:text-xl  xl:flex-wrap text-amber-950 justify-end`}
+              }`}
             >
-              {menu.slice(0, 4).map((item) => (
+              {translate.menu.slice(0, 4).map((item) => (
                 <li
                   key={item.text}
                   className="relative w-fit h-fit"
@@ -291,14 +213,19 @@ const Navbar = () => {
                   onMouseLeave={() => setHoveredMenu(null)}
                 >
                   {/* Parent */}
-                  <div className="flex items-center justify-between cursor-pointer px-4">
-                    <span>{t(item.text)}</span>
+                  <div className="flex items-center justify-between cursor-pointer ">
+                    {item.href ? (
+                      <Link to={item.href} className="block">
+                        {item.text}
+                      </Link>
+                    ) : (
+                      <span>{item.text}</span>
+                    )}
                     {item.children.length > 0 && (
                       <span
                         className={`material-symbols-outlined ml-1 transition-transform duration-300 ${
                           hoveredMenu === item.text ? "rotate-180" : "rotate-0"
                         }`}
-                        style={{ fontSize: "24px" }}
                       >
                         arrow_drop_down
                       </span>
@@ -311,28 +238,28 @@ const Navbar = () => {
                   {/* Submenu */}
                   {item.children.length > 0 && (
                     <div
-                      className={`absolute  ltop-full  mt-3 bg-white shadow-md rounded-md overflow-hidden transition-transform duration-300 border-b-8 border-amber-800 z-50 w-72 ${
+                      className={`absolute top-full  mt-3 bg-white shadow-md rounded-md overflow-hidden transition-all duration-500 border-b-8 border-amber-800 z-50 w-72 transform origin-top ${
                         Dir === "rtl" ? "right-0" : "left-0"
                       }
             ${
               hoveredMenu === item.text
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
+                ? "opacity-100 scale-y-100 pointer-events-auto"
+                : "opacity-0 scale-y-0 pointer-events-none"
             }`}
                     >
                       <ul>
                         {item.children.map((child) => (
                           <li key={child.text}>
-                            <a
-                              href={child.href}
-                              className={`block px-4 py-3 text-lg hover:bg-amber-50 whitespace-nowrap ${
-                                i18next.language === "ar"
+                            <Link
+                              to={child.href}
+                              className={`block px-4 py-3 text-amber-950 hover:bg-amber-50 whitespace-nowrap ${
+                                i18n.language === "ar"
                                   ? "text-right"
                                   : "text-left"
                               }`}
                             >
-                              {t(child.text)}
-                            </a>
+                              {child.text}
+                            </Link>
                           </li>
                         ))}
                       </ul>
@@ -344,17 +271,18 @@ const Navbar = () => {
 
             {/* navbar logo */}
             <div
-              className={`w-[300px] shadow-md px-8 -mt-8 bg-white rounded-4xl transition-transform duration-500 ease-in-out  ${
-                showTopBar ? "mt-8 py-2  scale-90" : " py-4  mt-0 scale-100"
+              className={`w-[225px] md:w-[250px] flex shrink-0  px-4 -mt-8 bg-white rounded-4xl transition-transform duration-500 ease-in-out  ${
+                showTopBar ? "mt-8 py-1  scale-90" : " py-2  mt-0 scale-100"
               }`}
+              style={{ boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)" }}
             >
               <img src="./assets/logo.png" alt="" />
             </div>
             {/* menu hover*/}
             <ul
-              className={`hidden mr-auto lg:grid grid-cols-2  gap-x-6  whitespace-nowrap  lg:pl-2   2xl:flex 2xl:gap-x-2 gap-y-1 font-semibold sm:text-base md:text-lg lg:text-xl xl:flex-wrap text-amber-950 `}
+              className={`hidden mr-auto  lg:grid grid-cols-2 gap-x-6 pl-6 xl:flex font-medium flex-wrap text-amber-950  `}
             >
-              {menu.slice(4).map((item) => (
+              {translate.menu.slice(4).map((item) => (
                 <li
                   key={item.text}
                   className="relative w-fit h-fit"
@@ -362,14 +290,13 @@ const Navbar = () => {
                   onMouseLeave={() => setHoveredMenu(null)}
                 >
                   {/* Parent */}
-                  <div className="flex items-center justify-between cursor-pointer px-4">
-                    <span>{t(item.text)}</span>
+                  <div className="flex items-center cursor-pointer ">
+                    <span>{item.text}</span>
                     {item.children.length > 0 && (
                       <span
                         className={`material-symbols-outlined ml-1 transition-transform duration-300 ${
                           hoveredMenu === item.text ? "rotate-180" : "rotate-0"
                         }`}
-                        style={{ fontSize: "24px" }}
                       >
                         arrow_drop_down
                       </span>
@@ -384,11 +311,11 @@ const Navbar = () => {
                     <div
                       className={`absolute ${
                         Dir === "rtl" ? "right-0" : "left-0"
-                      } top-full  mt-3 bg-white shadow-md rounded-md overflow-hidden transition-transform duration-300 border-b-8 border-amber-800 z-50 w-72
+                      } top-full  mt-3 bg-white shadow-md rounded-md overflow-hidden transition-all duration-500 border-b-8 border-amber-800 z-50 w-72 transform origin-top
             ${
               hoveredMenu === item.text
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
+                ? "opacity-100 scale-y-100 pointer-events-auto"
+                : "opacity-0 scale-y-0 pointer-events-none"
             }`}
                     >
                       <ul>
@@ -396,13 +323,13 @@ const Navbar = () => {
                           <li key={child.text}>
                             <a
                               href={child.href}
-                              className={`block px-4 py-3 text-lg hover:bg-amber-50 whitespace-nowrap ${
-                                i18next.language === "ar"
+                              className={`block px-4 py-3 text-amber-950 hover:bg-amber-50 whitespace-nowrap ${
+                                i18n.language === "ar"
                                   ? "text-right"
                                   : "text-left"
                               }`}
                             >
-                              {t(child.text)}
+                              {child.text}
                             </a>
                           </li>
                         ))}
@@ -417,10 +344,7 @@ const Navbar = () => {
               className="block cursor-pointer lg:hidden"
               onClick={() => setShowDrawer(!showDrawer)}
             >
-              <span
-                className="material-symbols-outlined bg-amber-950 p-2 text-white rounded-lg"
-                style={{ fontSize: "32px" }}
-              >
+              <span className="material-symbols-outlined bg-amber-950 p-2 text-white rounded-lg">
                 {showDrawer ? "close" : "menu"}
               </span>
             </button>
@@ -434,21 +358,21 @@ const Navbar = () => {
           }`}
         >
           <div className="w-full pt-6 flex justify-center items-center">
-            <img src="./assets/logo-3.png" className="w-[320px]" alt="" />
+            <img src="./assets/logo.png" className="w-[250px]" alt="" />
           </div>
 
-          <ul className="flex flex-col mt-12 font-semibold text-xl text-amber-950 cursor-pointer">
-            {menu.map((item) => (
+          <ul className="flex flex-col mt-6 font-medium text-amber-950 cursor-pointer">
+            {translate.menu.map((item) => (
               <li key={item.text}>
                 <div
-                  className="w-full hover:bg-amber-100 flex items-center justify-between pl-6 py-6 pr-6 relative  "
+                  className="w-full hover:bg-amber-100 flex items-center justify-between pl-6 py-4 pr-6 relative  "
                   onClick={() =>
                     setOpenSubMobile(
                       openSubMobile === item.text ? false : item.text
                     )
                   }
                 >
-                  <span>{t(item.text)}</span>
+                  <span>{item.text}</span>
                   {item.children.length > 0 && (
                     <span
                       className={`material-symbols-outlined ml-1 transition-transform duration-300
@@ -456,7 +380,6 @@ const Navbar = () => {
                       ${
                         openSubMobile === item.text ? "rotate-180" : "rotate-0"
                       }`}
-                      style={{ fontSize: "32px" }}
                     >
                       arrow_drop_down
                     </span>
@@ -475,11 +398,11 @@ const Navbar = () => {
                     <li key={child.text} className="relative">
                       <a
                         href={child.href}
-                        className={`block py-3 text-lg bg-gray-100 hover:bg-amber-50 ${
+                        className={`block py-3 text-[13px] bg-gray-100 hover:bg-amber-50 ${
                           Dir === "rtl" ? "text-right pr-8" : "text-left pl-8"
                         }`}
                       >
-                        {t(child.text)}
+                        {child.text}
                       </a>
                       <span className="absolute bottom-0 left-6 right-6 border-b-2 border-gray-200"></span>
                     </li>
@@ -493,16 +416,18 @@ const Navbar = () => {
       </header>
       {/* searchbar */}
       <div
-        className={`fixed top-40 xl:top-14 right-6 w-[600px] h-auto  bg-gray-100 shadow-md rounded-xl transition-all duration-300 ease-in-out flex gap-x-4 z-50  ${
+        ref={searchRef}
+        className={`fixed w-[450px] top-30 md:top-40 xl:top-12 right-6  md:w-[500px] h-auto  bg-gray-100  rounded-xl transition-all duration-300 ease-in-out flex gap-x-4 z-[10000]  ${
           openSearch
             ? "opacity-100 scale-100 pointer-events-auto"
             : "opacity-0 scale-95 pointer-events-none"
         }`}
+        style={{ boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)" }}
       >
         <input
           type="text"
-          placeholder="Masukkan kata kunci...."
-          className="w-[600px] h-[60px] text-amber-950 text-lg border border-gray-200 rounded-lg px-4 py-2 outline-gray-200 bg-white relative overflow-hidden"
+          placeholder={t(translate.search)}
+          className="w-[500px] h-[50px] text-amber-950  border border-gray-200 rounded-lg px-4 py-2 outline-gray-200 bg-white relative overflow-hidden"
         />
         <button
           type="button"

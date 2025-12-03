@@ -25,8 +25,8 @@ function App() {
         <Route path="/kontak" element={<Kontakpage />} />
       </Routes>
 
-      {/* 
-      <Footer /> */}
+      {/* footer */}
+      <Footer />
     </>
   );
 }

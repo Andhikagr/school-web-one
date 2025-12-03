@@ -1,33 +1,59 @@
 @import "tailwindcss";
 @import "tailwind-scrollbar-hide/v4";
+@import "leaflet/dist/leaflet.css";
 
 @layer base {
   h1 {
-    @apply font-bold text-5xl md:text-7xl lg:text-8xl; /* Hero title */
+    @apply font-bold text-3xl md:text-5xl font-[Inter]; /* Hero title */
   }
   h2 {
-    @apply font-bold text-4xl md:text-5xl lg:text-6xl; /* Section title */
+    @apply font-semibold text-2xl md:text-3xl; /* Section title */
   }
   h3 {
-    @apply font-semibold text-3xl md:text-4xl; /* Sub section */
+    @apply font-semibold text-xl md:text-2xl; /* Sub section */
   }
   h4 {
-    @apply font-semibold text-2xl md:text-3xl; /* Minor heading */
+    @apply font-medium text-lg md:text-xl; /* Minor heading */
   }
   h5 {
-    @apply font-medium text-xl md:text-2xl;
+    @apply font-medium text-base md:text-lg;
   }
   h6 {
-    @apply font-medium text-lg;
+    @apply font-normal text-sm md:text-base;
   }
   p {
-    @apply text-base md:text-lg leading-relaxed; /* body text */
+    @apply text-xs md:text-sm  leading-relaxed;
   }
   a {
-    @apply text-base md:text-lg underline-offset-2 hover:text-amber-600 transition-colors;
+    @apply text-xs md:text-sm  underline-offset-2 hover:text-amber-600 transition-colors;
   }
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+.leaflet-interactive:focus {
+  outline: none !important;
+}
+.leaflet-interactive {
+  pointer-events: auto !important; /* hover tetap jalan */
+}
+.leaflet-interactive {
+  cursor: default !important; /* ubah pointer jadi panah biasa */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.9s ease-in-out forwards;
 }
